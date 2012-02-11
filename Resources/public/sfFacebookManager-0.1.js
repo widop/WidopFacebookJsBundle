@@ -157,15 +157,18 @@ sfFacebookManager = (function($) {
 
             // load FB SDK asynchronously
             (function() {
-                var js;
                 if (!document.getElementById(my.fbOpts.divId)) {
                     throw 'Incorrect element div id: ' + my.fbOpts.divId;
                 }
 
-                js = document.createElement('script');
+                var div = document.createElement('div');
+                div.id = 'fb-root';
+
+                var js = document.createElement('script');
                 js.type = 'text/javascript';
-                js.async = true;
                 js.src = my.fbOpts.fbSrc;
+
+                document.getElementById(my.fbOpts.divId).appendChild(div);
                 document.getElementById(my.fbOpts.divId).appendChild(js);
             }());
 
