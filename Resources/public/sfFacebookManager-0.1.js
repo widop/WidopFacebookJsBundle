@@ -178,7 +178,7 @@ sfFacebookManager = (function($) {
                 my.isAPIready = true;
                 clickLogout();
                 // Force initial check status
-                if (document.location.href.indexOf(Routing.generate('User_login')) == -1) {
+                if (document.location.href.indexOf(Routing.generate(my.urls.loginRoute)) == -1) {
                     checkStatus();
                 }
             };
