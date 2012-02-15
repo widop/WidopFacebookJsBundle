@@ -6,24 +6,22 @@
 
 sfFacebookManager = (function ($) {
     var my = {
-        'isLoaded': false,
-        'options': {
-            'appId': null,
-            'cookie': true,
-            'status': true,
-            'xfbml': true,
-            'oauth': true,
-            'locale': 'fr_FR'
+        isLoaded: false,
+        options: {
+            appId: null,
+            cookie: false,
+            status: true,
+            xfbml: true,
+            locale: 'fr_FR'
         },
-        'routes': {
-            'login': null,
-            'loginCheck': null,
-            'logout': null,
-            'target': null
+        routes: {
+            login: null,
+            loginCheck: null,
+            logout: null,
+            target: null
         },
-        'events': [
-            { 'name': 'auth.login', 'callback': function (response) { my.login(response); } },
-            { 'name': 'auth.logout', 'callback': function (response) { my.logout(response); } }
+        events: [
+            { name: 'auth.authResponseChange', callback: function (response) { my.loginStatus(response); } }
         ]
     };
 
@@ -64,7 +62,7 @@ sfFacebookManager = (function ($) {
     }
 
     my.isReady = function () {
-        return my.options.appId && my.routes.login;
+        return my.options.appId && my.routes.login && my.routes.logout;
     }
 
     my.load = function () {
@@ -87,7 +85,7 @@ sfFacebookManager = (function ($) {
                 var js = document.createElement('script');
                 js.type = 'text/javascript';
                 js.async = true;
-                js.src = document.location.protocol + '//connect.facebook.net/' + my.options.locale + '/all.js';
+                js.src = '//connect.facebook.net/' + my.options.locale + '/all.js';
 
                 document.getElementsByTagName('head')[0].appendChild(js);
             }());
@@ -95,10 +93,7 @@ sfFacebookManager = (function ($) {
             window.fbAsyncInit = function() {
                 FB.init(my.options);
                 my.isLoaded = true;
-
-                for (event in my.events) {
-                    my.subscribe(event.name, event.callback);
-                }
+                my.events.forEach(function (event) {my.subscribe(event.name, event.callback)});
             };
         } catch (error) {
             my.log(error)
@@ -114,10 +109,10 @@ sfFacebookManager = (function ($) {
         query.wait(function (rows) {
             $.post(
                 Routing.generate(my.routes.loginCheck), {
-                    'facebook_id': rows[0].uid,
-                    'email': rows[0].email,
-                    'first_name': rows[0].first_name,
-                    'last_name': rows[0].last_name
+                    facebook_id: rows[0].uid,
+                    email: rows[0].email,
+                    first_name: rows[0].first_name,
+                    last_name: rows[0].last_name
                 },
                 function (response) {
                     if (response && response.status) {
@@ -128,12 +123,18 @@ sfFacebookManager = (function ($) {
         });
     };
 
-    my.logout = function (response) {
-        if (!response || !response.status) {
-            return;
+    my.loginStatus = function (response) {
+        if (response.authResponse && response.status == "connected") {
+            my.login(response);
+        } else {
+            my.logout(response);
         }
+    };
 
-        window.location = Routing.generate(my.routes.logout);
+    my.logout = function (response) {
+        if (!response.authResponse) {
+            window.location = Routing.generate(my.routes.logout);
+        }
     };
 
     my.subscribe = function (name, callback) {
