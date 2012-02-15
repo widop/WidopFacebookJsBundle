@@ -132,7 +132,7 @@ sfFacebookManager = (function ($) {
     };
 
     my.logout = function (response) {
-        if (!response.authResponse) {
+        if (!response.authResponse && document.location.href.indexOf(Routing.generate(my.routes.login)) != -1) {
             window.location = Routing.generate(my.routes.logout);
         }
     };
