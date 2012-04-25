@@ -1,0 +1,25 @@
+Widop\FacebookJsBundle\Entity\User:
+    type: mappedSuperclass
+    fields:
+        facebookId:
+            name: facebook_id
+            type: string
+            length: 255
+            unique: true
+        email:
+            type: string
+            length: 255
+            unique: true
+        firstName:
+            name: first_name
+            type: string
+            length: 255
+        lastName:
+            name: last_name
+            type: string
+            length: 255
+        gender:
+            type: string
+            length: 20
+        birthday:
+            type: datetime
