@@ -1,0 +1,4 @@
+widop_facebookjs_expose_authenticated:
+    pattern:      /facebook/expose-authenticated.{_format}
+    defaults:     { _controller: WidopFacebookJsBundle:Security:exposeAuthenticated, _format: "js" }
+    requirements: { _format: js }
