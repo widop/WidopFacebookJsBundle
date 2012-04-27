@@ -20,19 +20,21 @@ window.widop = window.widop || {};
         xfbml: true,
         locale: 'fr_FR',
 
-        loginRoute: null,
-        logoutRoute: null,
+        loginUrl: null,
+        logoutUrl: null,
+
+        autoLogout: true,
 
         loginCallback: function (response) { window.location.reload(true); },
         registerCallback: function (response) { window.location.reload(true); },
-        logoutCallback: function () { window.location = _options.logoutRoute; }
+        logoutCallback: function () { window.location = _options.logoutUrl; }
     };
 
     /**
      * The events.
      */
     var _events = [
-        { name: 'auth.authResponseChange', callback: function (response) { authResponseChange(response); }}
+        { name: 'auth.statusChange', callback: function (response) { statusChange(response); }}
     ];
 
     /**
@@ -102,19 +104,15 @@ window.widop = window.widop || {};
      * @return TRUE if the Facebook Manager is ready for being loeaded else FALSE
      */
     var isReady = function () {
-        return _options.appId && _options.loginRoute && _options.logoutRoute;
+        return _options.appId && _options.loginUrl && _options.logoutUrl;
     }
 
     /**
      * Login the user on the symfony2 firewall.
      */
     var login = function (response) {
-        if (!response || !response.status || !response.authResponse) {
-            return;
-        }
-
         $.post(
-            _options.loginRoute, {
+            _options.loginUrl, {
                 accessToken: response.authResponse.accessToken
             },
             function (response) {
@@ -139,10 +137,10 @@ window.widop = window.widop || {};
     /**
      * Dispatches the authentication response change event on the Facebook Manager behavior.
      */
-    var authResponseChange = function (response) {
-        if (response.authResponse && response.status == "connected" && !authenticated) {
+    var statusChange = function (response) {
+        if (response.authResponse && response.status == 'connected' && !authenticated) {
             login(response);
-        } else if (authenticated) {
+        } else if (_options.autoLogout && authenticated) {
             logout(response);
         }
     };
