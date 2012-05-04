@@ -1,0 +1,20 @@
+{
+    "name": "widop/facebook-js-bundle",
+    "description": "Provides a Facebook JS Platform integration for your Symfony2 project.",
+    "keywords": ["facebook"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Widop",
+            "email": "contact@widop.com"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "2.*"
+    },
+    "autoload": {
+        "psr-0": { "Widop\\FacebookJsBundle": "" }
+    },
+    "target-dir": "Widop/FacebookJsBundle"
+}
