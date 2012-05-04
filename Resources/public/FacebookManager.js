@@ -99,18 +99,9 @@ window.widop = window.widop || {};
     };
 
     /**
-     * Checks if the Facebook Manager is ready for being loaded.
-     *
-     * @return TRUE if the Facebook Manager is ready for being loeaded else FALSE
-     */
-    var isReady = function () {
-        return _options.appId && _options.loginUrl && _options.logoutUrl;
-    }
-
-    /**
      * Login the user on the symfony2 firewall.
      */
-    var login = function (response) {
+    facebookManager.login = function (response) {
         $.post(
             _options.loginUrl, {
                 accessToken: response.authResponse.accessToken
@@ -130,18 +121,27 @@ window.widop = window.widop || {};
     /**
      * Logout the user on the symfony2 firewall.
      */
-    var logout = function (response) {
-        _options.logoutCallback();
+    facebookManager.logout = function (response) {
+        _options.logoutCallback(response);
     };
+
+    /**
+     * Checks if the Facebook Manager is ready for being loaded.
+     *
+     * @return TRUE if the Facebook Manager is ready for being loeaded else FALSE
+     */
+    var isReady = function () {
+        return _options.appId && _options.loginUrl && _options.logoutUrl;
+    }
 
     /**
      * Dispatches the authentication response change event on the Facebook Manager behavior.
      */
     var statusChange = function (response) {
         if (response.authResponse && response.status == 'connected' && !authenticated) {
-            login(response);
+            facebookManager.login(response);
         } else if (_options.autoLogout && authenticated) {
-            logout(response);
+            facebookManager.logout(response);
         }
     };
 
