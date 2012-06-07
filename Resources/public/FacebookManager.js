@@ -34,7 +34,7 @@ window.widop = window.widop || {};
      * The events.
      */
     var _events = [
-        { name: 'auth.loginStatus', callback: function (response) { loginStatus(response); }}
+        { name: 'auth.statusChange', callback: function (response) { statusChange(response); }}
     ];
 
     /**
@@ -137,7 +137,7 @@ window.widop = window.widop || {};
     /**
      * Dispatches the authentication response change event on the Facebook Manager behavior.
      */
-    var loginStatus = function (response) {
+    var statusChange = function (response) {
         if (response.authResponse && response.status == 'connected' && !authenticated) {
             facebookManager.login(response);
         } else if (_options.autoLogout && authenticated) {
