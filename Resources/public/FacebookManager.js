@@ -25,8 +25,16 @@ window.widop = window.widop || {};
 
         autoLogout: true,
 
-        loginCallback: function (response) { window.location.reload(true); },
-        registerCallback: function (response) { window.location.reload(true); },
+        loginCallback: function (response) {
+            if (response.status) {
+                window.location.reload(true);
+            }
+        },
+        registerCallback: function (response) {
+            if (response.status) {
+                window.location.reload(true);
+            }
+        },
         logoutCallback: function () { window.location = _options.logoutUrl; }
     };
 
@@ -107,12 +115,10 @@ window.widop = window.widop || {};
                 accessToken: response.authResponse.accessToken
             },
             function (response) {
-                if (response && response.status) {
-                    if (response.process == 'register') {
-                        _options.registerCallback(response);
-                    } else {
-                        _options.loginCallback(response);
-                    }
+                if (response.process == 'register') {
+                    _options.registerCallback(response);
+                } else {
+                    _options.loginCallback(response);
                 }
             }
         );
